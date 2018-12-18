@@ -1,0 +1,134 @@
+package Battle;
+import Creatures.*;
+import javafx.scene.canvas.Canvas;
+import java.util.Random;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import MyThread.*;
+
+import static java.lang.Thread.*;
+
+//对峙
+public class Confront {
+
+    private CalabashBrother[]Huluwas;
+    private Grandfather grandfather;
+    private Snake snake;
+    private Scorpion scorpion;
+    private Follower[]follower;
+    private Battlefield ground;
+    private Formation form;
+    private Lock lock; //进程锁，以便后来的进行移动
+    private myThread[] threads_of_mine;
+    private Canvas mycanvas;
+
+    public Confront(Canvas canvas){
+        threads_of_mine = new myThread[17]; //为17个线程
+        ground = new Battlefield(10,20); //创造一个10行20列的战场
+        form = new Formation();
+        lock = new ReentrantLock(); //建立同步锁
+        //创建线程
+        //葫芦娃
+        Huluwas = new CalabashBrother[7];
+        this.mycanvas = canvas;
+        for(int i  = 0; i < 7;i++)
+        {
+            Huluwas[i] = new CalabashBrother(i,-1,-1);
+            threads_of_mine[i] = new myThread(Huluwas[i],ground,form,lock,mycanvas); //线程
+        }
+        //爷爷
+        grandfather = new Grandfather();
+        threads_of_mine[7] = new myThread(grandfather,ground,form,lock,mycanvas);
+        //蛇精
+        snake = new Snake();
+        threads_of_mine[8] = new myThread(snake,ground,form,lock,mycanvas);
+        //蝎子精
+        scorpion = new Scorpion();
+        threads_of_mine[9] = new myThread(scorpion,ground,form,lock,mycanvas);
+        //小怪
+        follower = new Follower[7];
+        for(int i = 0; i < 7; i++)
+        {
+            follower[i] = new Follower();
+            threads_of_mine[10 + i] = new myThread(follower[i],ground,form,lock,mycanvas);
+        }
+        //初始化完毕
+        //开始进行线程的RUN方法
+    }
+    //初始化放置葫芦娃
+    public void initHuluwa( ) {
+        Random rand =new Random();
+        for(int i = 0; i  < 7;i++) {
+            int k = rand.nextInt(7);
+            CalabashBrother temp = Huluwas[k];
+            Huluwas[k] = Huluwas[i];
+            Huluwas[i] = temp;
+        }
+        //将葫芦娃放置在战场上
+        for(int i = 0; i <7;i++)
+        {
+            ground.putTheCre(Huluwas[i],i+1,5);
+        }
+    }
+    //初始化爷爷
+     public void initGrandfather( )
+     {
+         ground.putTheCre(grandfather,5,0);
+     }
+     //初始化蛇精
+     public void initMonster( )
+     {
+         ground.putTheCre(snake,5,19);
+     }
+     //排序葫芦娃
+    public void sortThehuluwa( ) {
+        for(int i = 6; i >= 0;i--)
+        {
+            for(int j = 0; j < i;j++)
+            {
+                if(Huluwas[j].getPro() > Huluwas[j+1].getPro())
+                {
+                    CalabashBrother temp = Huluwas[j];
+                    Huluwas[j] = Huluwas[j+1];
+                    Huluwas[j+1] = temp;
+                }
+            }
+        }
+        for(int i = 0; i<7;i++)
+        {
+            ground.movTheCre(Huluwas[i],i+1,5);
+        }
+    }
+    //改变阵型
+    public void makeChangeofMonster(FormationName name) {
+        int index = name.ordinal();
+        form.changeFormation(index,scorpion,follower,ground);
+    }
+    //打印
+    public void printThefield() {
+        this.mycanvas.getGraphicsContext2D().clearRect(0,0,1000,500);
+        for(int i = 0; i< 10 ;i++)
+        {
+            for(int j = 0; j < 20;j++)
+            {
+                ground.showThecreature(i,j,this.mycanvas);
+            }
+            System.out.println();
+        }
+    }
+
+    public void start_Fight()
+    {
+        this.ground.setWar_start();
+        for(int i = 0; i < 17 ; i++)
+        {
+                this.threads_of_mine[i].start();
+        }
+    }
+
+    public Battlefield ret_groung()
+    {
+        return this.ground;
+    }
+
+}
