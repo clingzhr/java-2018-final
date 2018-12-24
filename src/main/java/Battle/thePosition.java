@@ -69,4 +69,14 @@ public class thePosition
         this.creature = null;
         this.empty = true;
     }
+
+    public void killPos() {
+        if(this.creature!=null){
+            if(this.creature.is_Alive() == true){
+                this.creature.killSelf();
+            }
+            this.creature = null;
+        }
+        this.empty = true;
+    }
 }

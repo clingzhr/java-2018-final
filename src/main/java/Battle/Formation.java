@@ -1,5 +1,6 @@
 package Battle;
 
+import Creatures.CalabashBrother;
 import Creatures.Follower;
 import Creatures.Scorpion;
 
@@ -17,7 +18,8 @@ enum FormationName {
 }
 
 public class Formation {
-    public void changeFormation(int index, Scorpion scorpion, Follower[]follower, Battlefield ground)
+
+    public void changeFormation_mon(int index, Scorpion scorpion, Follower[]follower, Battlefield ground)
     {
         switch (index)
         {
@@ -118,6 +120,103 @@ public class Formation {
             }
             default:
                 System.out.println("无法移动");
+        }
+    }
+    public void changeFormation_Hulu(int index, CalabashBrother[] Huluwa,Battlefield ground)
+    {
+        int dis = 10;
+        int up = 1;
+        switch (index)
+        {
+                case 0: {
+                    ground.movTheCre(Huluwa[0], 5 - up, 11-dis);
+                    ground.movTheCre(Huluwa[1], 6- up, 12-dis);
+                    ground.movTheCre(Huluwa[2], 7- up, 13-dis);
+                    ground.movTheCre(Huluwa[3], 7- up, 14-dis);
+                    ground.movTheCre(Huluwa[4], 6- up, 15-dis);
+                    ground.movTheCre(Huluwa[5], 5- up, 16-dis);
+                    ground.movTheCre(Huluwa[6], 4- up, 17-dis);
+                    break;
+                }
+                case 1:
+                {
+                    ground.movTheCre(Huluwa[0],3- up,16-dis);
+                    ground.movTheCre(Huluwa[1],4- up,15-dis);
+                    ground.movTheCre(Huluwa[2],5- up,14-dis);
+                    ground.movTheCre(Huluwa[3],6- up,13-dis);
+                    ground.movTheCre(Huluwa[4],7- up,12-dis);
+                    ground.movTheCre(Huluwa[5],8- up,11-dis);
+                    ground.movTheCre(Huluwa[6],9- up,10-dis);
+                    break;
+                }
+                case 2:
+                {
+                    ground.movTheCre(Huluwa[0],2- up,13-dis);
+                    ground.movTheCre(Huluwa[1],3- up,12-dis);
+                    ground.movTheCre(Huluwa[2],4- up,13-dis);
+                    ground.movTheCre(Huluwa[3],5- up,12-dis);
+                    ground.movTheCre(Huluwa[4],6- up,13-dis);
+                    ground.movTheCre(Huluwa[5],7- up,12-dis);
+                    ground.movTheCre(Huluwa[6],8- up,13-dis);
+                    break;
+                }
+                case 3:
+                {
+                    ground.movTheCre(Huluwa[0],2- up,13-dis);
+                    ground.movTheCre(Huluwa[1],3- up,12-dis);
+                    ground.movTheCre(Huluwa[2],4- up,13-dis);
+                    ground.movTheCre(Huluwa[3],5- up,12-dis);
+                    ground.movTheCre(Huluwa[4],6- up,13-dis);
+                    ground.movTheCre(Huluwa[5],7- up,12-dis);
+                    ground.movTheCre(Huluwa[6],8- up,13-dis);
+                    break;
+                }
+                case 4:
+                {
+                    ground.movTheCre(Huluwa[0],8- up,13-dis);
+                    ground.movTheCre(Huluwa[1],5- up,14-dis);
+                    ground.movTheCre(Huluwa[2],6- up,11-dis);
+                    ground.movTheCre(Huluwa[3],6- up,13-dis);
+                    ground.movTheCre(Huluwa[4],6- up,15-dis);
+                    ground.movTheCre(Huluwa[5],7- up,12-dis);
+                    ground.movTheCre(Huluwa[6],7- up,14-dis);
+                    break;
+                }
+                case 5:
+                {
+                    ground.movTheCre(Huluwa[0],4- up,12-dis);
+                    ground.movTheCre(Huluwa[1],4- up,14-dis);
+                    ground.movTheCre(Huluwa[2],5- up,11-dis);
+                    ground.movTheCre(Huluwa[3],5- up,15-dis);
+                    ground.movTheCre(Huluwa[4],6- up,12-dis);
+                    ground.movTheCre(Huluwa[5],6- up,14-dis);
+                    ground.movTheCre(Huluwa[6],7- up,13-dis);
+                    break;
+                }
+                case 6:
+                {
+                    ground.movTheCre(Huluwa[0],3- up,14-dis);
+                    ground.movTheCre(Huluwa[1],4- up,13-dis);
+                    ground.movTheCre(Huluwa[2],5- up,12-dis);
+                    ground.movTheCre(Huluwa[3],6- up,12-dis);
+                    ground.movTheCre(Huluwa[4],7- up,13-dis);
+                    ground.movTheCre(Huluwa[5],8- up,14-dis);
+                    ground.movTheCre(Huluwa[6],9- up,15-dis);
+                    break;
+                }
+                case 7:
+                {
+                    ground.movTheCre(Huluwa[0],5- up,12-dis);
+                    ground.movTheCre(Huluwa[1],5- up,13-dis);
+                    ground.movTheCre(Huluwa[2],5- up,14-dis);
+                    ground.movTheCre(Huluwa[3],6- up,11-dis);
+                    ground.movTheCre(Huluwa[4],6- up,13-dis);
+                    ground.movTheCre(Huluwa[5],6- up,15-dis);
+                    ground.movTheCre(Huluwa[6],7- up,13-dis);
+                    break;
+                }
+                default:
+                    System.out.println("无法移动");
         }
     }
 }

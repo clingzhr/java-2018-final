@@ -2,6 +2,8 @@ package Creatures;
 
 import java.net.URL;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 enum Color
 {
@@ -33,6 +35,9 @@ public class CalabashBrother extends Creature {
         pro = i;
         this.url_of_image = this.getClass().getClassLoader().getResource(new String("pic/"+ (this.pro+1) +".jpg"));
         this.image =  new Image(url_of_image.toString(),50,50,false,false);
+        this.source_of_sound = new Media(this.getClass().getClassLoader().getResource(new String("music/attack_1.mp3")).toString());
+        this.sound_of_battle = new MediaPlayer(this.source_of_sound);
+        this.sound_of_battle.setAutoPlay(false);
         theBro = Color.values()[i];
         this.name = theBro.getName();
         nature = true;

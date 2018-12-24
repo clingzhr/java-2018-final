@@ -1,6 +1,9 @@
 package Creatures;
+import Battle.Battlefield;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -13,13 +16,16 @@ public class Creature implements Fighting{
     String name;
     boolean nature;
     Image image; //显示图片
+    Image battle_Image;
+    Image dead_Image;
     //引入战斗序列
     int total_blood; //总体的血量
     int cur_blood; //当前的血量
     boolean TypeOfAttack; //近程攻击还是远程攻击
     int power_of_attack; //攻击力
     int power_of_defence; //防御力
-
+    MediaPlayer sound_of_battle; //战斗音响
+    Media source_of_sound;
     boolean isAlive;
 
     public Creature(int x,int y) {
@@ -31,6 +37,10 @@ public class Creature implements Fighting{
         power_of_attack = 10;
         power_of_defence = 0; //攻击力和防御力
         isAlive = true; //存活的
+        this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/火焰.png")).toString(),
+                20,20,false,false);
+        this.dead_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/死亡.jpg")).toString(),
+                50,50,false,false);
     }
 
     public Creature() {
@@ -41,6 +51,10 @@ public class Creature implements Fighting{
         power_of_attack = 10;
         power_of_defence = 0; //攻击力和防御力
         isAlive = true;
+        this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/火焰.png")).toString(),
+                20,20,false,false);
+        this.dead_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/死亡.jpg")).toString(),
+                50,50,false,false);
     }
 
     public void changeTheposition(int i,int j) {
@@ -64,42 +78,123 @@ public class Creature implements Fighting{
 
     public void show_GUI(Canvas canvas){
         //显示图片
-        canvas.getGraphicsContext2D().drawImage(this.image,this.j * 50 ,this.i * 50);
-        //显示血量条
-        double rate = (double)this.cur_blood / this.total_blood; //进行初始化
-        canvas.getGraphicsContext2D().setFill(Color.GREENYELLOW);
-        canvas.getGraphicsContext2D().fillRect(this.j * 50 ,this.i * 50, 50 * rate, 5);
-        canvas.getGraphicsContext2D().setFill(Color.RED);
-        canvas.getGraphicsContext2D().fillRect(this.j * 50 + 50 * rate  ,this.i * 50, 50 * (1-rate), 5);
-        //canvas.getGraphicsContext2D().save();
-    }
-
-    public int want_to_mov_x() {
-        int t = new Random().nextInt(2);
-        //生成一个0到2
-        int x  = this.i;
-        if(x <= 5) {
-            x ++;
-        }
-        else if(x > 5) {
-            x--;
-        }
-        return  x;
-    }
-
-    public int want_to_mov_y() {
-        int t = new Random().nextInt(2);
-        //生成一个0到4的随机数
-        int y = this.j;
-        if( y <= 10)
-        {
-            y ++;
+        if(this.isAlive == true) {
+            canvas.getGraphicsContext2D().drawImage(this.image, this.j * 50, this.i * 50);
+            //显示血量条
+            double rate = (double) this.cur_blood / this.total_blood; //进行初始化
+            canvas.getGraphicsContext2D().setFill(Color.GREENYELLOW);
+            canvas.getGraphicsContext2D().fillRect(this.j * 50, this.i * 50, 50 * rate, 5);
+            canvas.getGraphicsContext2D().setFill(Color.RED);
+            canvas.getGraphicsContext2D().fillRect(this.j * 50 + 50 * rate, this.i * 50, 50 * (1 - rate), 5);
         }
         else
         {
-            y --;
+            canvas.getGraphicsContext2D().drawImage(this.dead_Image, this.j * 50, this.i * 50);
         }
-        return  y;
+    }
+
+    public int[] want_to_mov_x_y(Battlefield ground) {
+        ///检测，通往敌人多的方向去
+        int num_up = 0;
+        int num_down = 0;
+        int num_right = 0;
+        int num_left = 0;
+        boolean to_left = true;
+        boolean to_up = true; //向左和向上
+        int pos[] = new int[2];
+        //判断各个方位上的怪物
+        for(int i = 0; i < 10;i++){
+            for(int j = 0; j < 20; j++){
+                if(i != this.i && j != this.j){
+                    Creature temp = ground.get_Creature(i,j); //得到
+                    if(temp != null){
+                        if(temp.isAlive == true&& this.isAlive == true && this.nature != temp.nature){ //敌人
+                            if(i < this.i){
+                                num_up++;
+                            }
+                            else
+                            {
+                                num_down++;
+                            }
+                            if(j < this.j){
+                                num_left ++;
+                            }
+                            else{
+                                num_right++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(num_left < num_right){
+            to_left =  false;
+        }
+        if(num_up < num_down){
+            to_up = false;
+        }
+
+        //设置坐标
+        while (true) {
+            int x = this.i;
+            int y = this.j;
+            Random t = new Random();
+            int choose = t.nextInt(4);
+            if (choose == 0) {
+                x = getX(to_up, x);
+            } else if (choose == 1) {
+                y = getY(to_left, y);
+            } else if (choose == 2) {
+                x = getX(to_up, x);
+                y = getY(to_left, y);
+            } else { //相反方向
+                Random k = new Random();
+                int r = k.nextInt(3);
+                if (r == 0)
+                    x = getX(!to_up, x);
+                else if (r == 1)
+                    y = getY(!to_left, y);
+                else {
+                    x = getX(!to_up, x);
+                    y = getY(!to_left, y);
+                }
+            }
+            Creature temp = ground.get_Creature(x, y);
+            if (temp != null) {
+                if (temp.is_Alive() == false) {//墓碑
+                    continue;
+                }
+            } else {
+                pos[0] = x;
+                pos[1] = y;
+                break;
+            }
+        }
+        return pos;
+    }
+
+    private int getY(boolean to_left, int y) {
+        if(to_left== true){
+            y--;
+            if(y < 0) y = 0;
+        }
+        else{
+            y++;
+            if(y > 19) y = 19;
+        }
+        return y;
+    }
+
+    private int getX(boolean to_up, int x) {
+        if(to_up == true){
+            x--;
+            if(x < 0) x = 0;
+        }
+        else{
+            x++;
+            if(x > 9) x = 9;
+        }
+        return x;
     }
 
     public boolean is_Alive(){
@@ -127,12 +222,71 @@ public class Creature implements Fighting{
         return this.power_of_defence;
     }
 
+    public boolean retNature() {
+        return this.nature; //返回属性
+    }
+
+    public void killSelf() {
+        this.isAlive = false; //死亡
+    }
+
     @Override
-    public void attackEnemy(Creature enemy) {
-        System.out.print(this.name + "攻击了");enemy.getTheinfo();
-        System.out.println();
+    public void attackEnemy(Creature enemy,Canvas canvas) {
+        if(!this.is_Alive() || !enemy.is_Alive()) return;
+        this.sound_of_battle.play();
         int damage = this.power_of_attack - enemy.power_of_defence;
         enemy.lost_blood(damage);
+        int enemy_x = enemy.i;
+        int enemy_y = enemy.j; //坐标
+        //根据坐标进行绘图，进行攻击显示
+        draw_attack(enemy_x,enemy_y,canvas);
+        this.sound_of_battle.stop();
+    }
+
+    public void draw_attack(int t_x ,int t_y,Canvas canvas) {
+        int cur_i = this.i;
+        int cur_j = this.j;
+        //考虑四个方向
+        synchronized (canvas) {
+            if (cur_j == t_y && cur_i < t_x) //向上
+            {
+                for (int ti = cur_i * 50 + 25; ti < t_x * 50 + 25; ti += 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, this.j * 50 + 25, ti);
+                }
+            } else if (cur_j == t_y && cur_i > t_x) {
+                for (int ti = cur_i * 50 + 25; ti > t_x * 50 + 25; ti -= 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, this.j * 50 + 25, ti);
+                }
+            } else if (cur_i == t_x && cur_j < t_y) {
+                for (int tj = cur_j * 50 + 25; tj < t_y * 50 + 25; tj += 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, this.i * 50 + 25);
+                }
+            } else if (cur_i == t_x && cur_j > t_y) {
+                for (int tj = cur_j * 50 + 25; tj > t_y * 50 + 25; tj -= 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, this.i * 50 + 25);
+                }
+            } else if (cur_i > t_x && cur_j < t_y) //左上
+            {
+                for (int ti = cur_i * 50 + 25, tj = cur_j * 50 + 25; ti > t_x * 50 + 25 && tj < t_y * 50 + 25; ti -= 20, tj += 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, ti);
+                }
+            } else if (cur_i > t_x && cur_j > t_y) //左下
+            {
+                for (int ti = cur_i * 50 + 25, tj = cur_j * 50 + 25; ti > t_x * 50 + 25 && tj > t_y * 50 + 25; ti -= 20, tj -= 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, ti);
+                }
+            } else if (cur_i < t_x && cur_j < t_y) //右上
+            {
+                for (int ti = cur_i * 50 + 25, tj = cur_j * 50 + 25; ti < t_x * 50 + 25 && tj < t_y * 50 + 25; ti += 20, tj += 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, ti);
+                }
+            } else if (cur_i < t_x && cur_j > t_y) //右下
+            {
+                for (int ti = cur_i * 50 + 25, tj = cur_j * 50 + 25; ti < t_x * 50 + 25 && tj > t_y * 50 + 25; ti += 20, tj -= 20) {
+                    canvas.getGraphicsContext2D().drawImage(this.battle_Image, tj, ti);
+                }
+            }
+        }
     }
 }
 

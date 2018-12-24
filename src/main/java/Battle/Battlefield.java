@@ -53,7 +53,6 @@ public class Battlefield {
         {
             if(field[i][j].isEmpty() == false)
             {
-            //交换
                 if(war_start == false) field[i][j].swapCre(field[x][y]); //战斗没开始可以交换位置
             }
             else
@@ -76,7 +75,10 @@ public class Battlefield {
         //检查四面和左右角是否有敌人
         Creature res = null;
         boolean hasEnemy = false; //一开始没有敌人
-        boolean tempNature = this.field[i][j].retCreature().typeOfNature();
+        boolean tempNature;
+        if(this.field[i][j].retCreature()!=null)
+            tempNature = this.field[i][j].retCreature().typeOfNature();
+        else return null;
         for(int x = i - 1; x <=  i + 1; x ++) {
             for(int y = j - 1; y <= j + 1; y ++){
                 if(x < 0 || x > 9 || y < 0 || y > 19)
@@ -87,8 +89,6 @@ public class Battlefield {
                 if(t == null ) continue;
                 if(t.is_Alive() == false) continue;
                 if(t.typeOfNature() != tempNature) {
-                    //找到敌人!
-                    System.out.println("discover enemy");
                     hasEnemy = true;
                     res = t;
                     break;
@@ -100,6 +100,67 @@ public class Battlefield {
 
     public void remove(int i, int j) {
         this.field[i][j].clearPos();
+    }
+
+    public boolean isCalashAlive() {
+        boolean alive = false;
+        for(int i = 0; i < 10; i ++) {
+            for(int j = 0; j < 20; j++) {
+                if(this.field[i][j].isEmpty() == false){ //有生物体存在
+                    Creature temp = this.field[i][j].retCreature();//得到引用
+                    if(temp.is_Alive() && temp.retNature() == true) {//正义
+                        alive = true;
+                    }
+                }
+            }
+        }
+        return alive;
+    }
+
+    public boolean isMonsterAlive() {
+        boolean alive = false;
+        for(int i = 0; i < 10; i ++) {
+            for(int j = 0; j < 20; j++) {
+                if(this.field[i][j].isEmpty() == false){ //有生物体存在
+                    Creature temp = this.field[i][j].retCreature();//得到引用
+                    if(temp.is_Alive() && temp.retNature() == false){//邪恶
+                        alive = true;
+                    }
+                }
+            }
+        }
+        return alive;
+    }
+
+    public void killAll() {
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 20; j++){
+                this.field[i][j].killPos();
+            }
+        }
+    }
+
+    public Creature get_Creature(int i,int j){
+        return this.field[i][j].retCreature(); //返回
+    }
+
+    public int[][] initFiled(Creature[] creatures) {
+        int [][]init = new int[10][20];
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 20; j++) {
+                Creature t = this.field[i][j].retCreature();
+                if (t == null) init[i][j] = -1;
+                else {
+                    for(int k = 0; k < creatures.length; k++){
+                        if(creatures[k] == t)
+                        {
+                            init[i][j] = k;
+                        }
+                    }
+                }
+            }
+        }
+        return init; //返回初始化
     }
 }
 
