@@ -10,6 +10,8 @@ public class Grandfather extends Creature{
         super();
         name = "爷爷";
         nature = true;
+        this.power_of_attack = 20;
+        this.power_of_defence = 0;
         this.image =  new Image(getClass().getClassLoader().getResource("pic/grandfather.jpg").toString()
                 ,50,50,false,false);
         this.source_of_sound = new Media(this.getClass().getClassLoader().getResource(new String("music/attack_1.mp3")).toString());

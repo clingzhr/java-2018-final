@@ -33,7 +33,7 @@ public class Creature implements Fighting{
         j = y;
         //初始化都为满的
         total_blood = 100;
-        cur_blood = 50; //都为满血power_of_attack
+        cur_blood = 100; //都为满血power_of_attack
         power_of_attack = 10;
         power_of_defence = 0; //攻击力和防御力
         isAlive = true; //存活的
@@ -102,6 +102,8 @@ public class Creature implements Fighting{
         boolean to_left = true;
         boolean to_up = true; //向左和向上
         int pos[] = new int[2];
+        pos[0] = this.i;
+        pos[1] = this.j;
         //判断各个方位上的怪物
         for(int i = 0; i < 10;i++){
             for(int j = 0; j < 20; j++){
@@ -133,9 +135,10 @@ public class Creature implements Fighting{
         if(num_up < num_down){
             to_up = false;
         }
-
+        int count = 0;
         //设置坐标
-        while (true) {
+        while (true)
+        {
             int x = this.i;
             int y = this.j;
             Random t = new Random();
@@ -162,12 +165,40 @@ public class Creature implements Fighting{
             Creature temp = ground.get_Creature(x, y);
             if (temp != null) {
                 if (temp.is_Alive() == false) {//墓碑
-                    continue;
+                    count++;
                 }
             } else {
                 pos[0] = x;
                 pos[1] = y;
                 break;
+            }
+            System.out.println("change");
+            if(count == 10) //找不到
+            {
+                System.out.println("change");
+                for(int m = this.i - 1; m < this.i + 1 ; m++) {
+                    for (int n = this.j - 1; n < this.j + 1; n++) {
+                        if (m >= 0 && m < 10 && n >= 0 && n < 20) {
+                            Creature cre_temp = ground.get_Creature(m, n);
+                            if (cre_temp == null) {
+                                Random can_move = new Random();
+                                int chance = can_move.nextInt(2);
+                                if (chance == 0) {
+                                    pos[0] = m;
+                                    pos[1] = n;
+                                }
+                            } else if (cre_temp.is_Alive() == false) {
+                                Random can_move = new Random();
+                                int chance = can_move.nextInt(2);
+                                if (chance == 0) {
+                                    pos[0] = m;
+                                    pos[1] = n;
+                                }
+                            }
+                        }
+                    }
+                }
+                return pos;
             }
         }
         return pos;
@@ -230,7 +261,6 @@ public class Creature implements Fighting{
         this.isAlive = false; //死亡
     }
 
-    @Override
     public void attackEnemy(Creature enemy,Canvas canvas) {
         if(!this.is_Alive() || !enemy.is_Alive()) return;
         this.sound_of_battle.play();

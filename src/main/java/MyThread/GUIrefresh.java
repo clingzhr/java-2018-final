@@ -91,7 +91,7 @@ public class GUIrefresh  extends Thread{
         {
             this.ground.setWar_start();
             BufferedReader bf = new BufferedReader(this.read); //
-            ArrayList<String> arrayList = new ArrayList<>();
+            ArrayList<String> arrayList = new ArrayList<String>();
             arrayList.clear();
             while (true) {
                 String temp = "";

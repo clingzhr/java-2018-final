@@ -8,14 +8,26 @@
     <groupId>Calabash_Brothers_maven_javafx</groupId>
     <artifactId>Calabash_Brothers_GUI</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>CalabashBrother</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+    </properties>
 
     <build>
-        <finalName>calashBro</finalName>
+        <defaultGoal>compile</defaultGoal>
+        <finalName>CalabashBrothers</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.6.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>

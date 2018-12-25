@@ -10,6 +10,8 @@ public class Snake extends Monster
     {
         super();
         this.name = "蛇精";
+        this.power_of_attack = 30;
+        this.power_of_defence = 0;
         this.image =  new Image(getClass().getClassLoader().getResource("pic/snake.jpg").toString()
                 ,50,50,false,false);
         this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/水滴.png")).toString(),

@@ -33,6 +33,8 @@ public class CalabashBrother extends Creature {
     public CalabashBrother(int i,int x,int y) {
         super(x,y);
         pro = i;
+        this.power_of_attack = 15;
+        this.power_of_defence = 5;
         this.url_of_image = this.getClass().getClassLoader().getResource(new String("pic/"+ (this.pro+1) +".jpg"));
         this.image =  new Image(url_of_image.toString(),50,50,false,false);
         this.source_of_sound = new Media(this.getClass().getClassLoader().getResource(new String("music/attack_1.mp3")).toString());

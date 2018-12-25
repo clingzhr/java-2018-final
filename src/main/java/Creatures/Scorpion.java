@@ -10,6 +10,8 @@ public class Scorpion extends Monster
     {
         super();
         this.name = "蝎子精";
+        this.power_of_attack = 25;
+        this.power_of_defence = 10;
         this.image =  new Image(getClass().getClassLoader().getResource("pic/xiezi.jpg").toString()
                 ,50,50,false,false);
         this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/水滴.png")).toString(),

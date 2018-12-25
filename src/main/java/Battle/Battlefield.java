@@ -73,6 +73,7 @@ public class Battlefield {
 
     public Creature checkEnemy(int i,int j){ //根据位置查询周围有没有敌人
         //检查四面和左右角是否有敌人
+        if(i < 0 || i > 9 || j < 0 || j > 19) return null;
         Creature res = null;
         boolean hasEnemy = false; //一开始没有敌人
         boolean tempNature;

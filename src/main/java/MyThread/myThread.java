@@ -75,7 +75,8 @@ public class myThread  extends Thread{
     private void attack() {
         if(this.living == false) return;
         synchronized (this.ground) {
-            Creature enemy = this.check();
+            if (this.creature_of_thread.is_Alive() == false) return;
+            Creature enemy = this.ground.checkEnemy(this.creature_of_thread.getI(),this.creature_of_thread.getJ()); //根据坐标获取
             if (enemy == null) return;
             if (this.creature_of_thread.is_Alive() && enemy.is_Alive()) //都活着
             {
@@ -116,11 +117,4 @@ public class myThread  extends Thread{
         }
     }
 
-    public Creature check()
-    {
-        if(this.living == false) return null;
-        Creature temp = null;
-        temp = this.ground.checkEnemy(this.creature_of_thread.getI(),this.creature_of_thread.getJ()); //根据坐标获取
-        return  temp; //找到一个进攻的对象，如果没有就进行返回
-    }
 }

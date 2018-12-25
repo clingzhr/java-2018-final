@@ -10,6 +10,8 @@ public class Follower extends Monster
     {
         super();
         this.name = "小怪";
+        this.power_of_attack = 10;
+        this.power_of_defence = 5;
         this.image =  new Image(getClass().getClassLoader().getResource("pic/monster.jpg").toString()
                 ,50,50,false,false);
         this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/水滴.png")).toString(),
