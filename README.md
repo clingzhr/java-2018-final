@@ -35,11 +35,11 @@
 
 当高于20%时，恢复正常状态。提高了趣味性。
 
-![愤怒](E:\javafinal\Calabash_Brothers_GUI\markdown\愤怒.png)
+![愤怒](markdown\愤怒.png)
 
 #### 三、战斗过程更加精彩
 
-**以下是精彩的战斗场景：**![fight](E:\javafinal\Calabash_Brothers_GUI\markdown\fight.gif)
+**以下是精彩的战斗场景：**![fight](markdown\fight.gif)
 
 最精彩的战斗记录在bestBattle.txt中
 
