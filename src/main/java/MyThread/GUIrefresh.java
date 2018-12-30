@@ -242,6 +242,15 @@ public class GUIrefresh  extends Thread{
                         }
                         else System.err.println("错误");
                 }
+                else if(type == 2){//技能
+                    Creature cre = ground.get_Creature(start_pos[0], start_pos[1]);
+                    if(cre != null){
+                        if(cre.is_Alive()){
+                            cre.usingSkill(ground,this.mycanvas); //使用技能
+                        }
+                    }
+                    else System.err.println("错误");
+                }
             }
             else if(t.length == 2){
                 num_lines++;

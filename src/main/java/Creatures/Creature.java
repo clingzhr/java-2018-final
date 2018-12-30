@@ -7,6 +7,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import javax.management.relation.RelationNotFoundException;
 import java.util.Random;
 
 
@@ -18,10 +19,13 @@ public class Creature implements Fighting{
     Image image; //显示图片
     Image battle_Image;
     Image dead_Image;
+    Image skillImage; //技能图片
+    Image angryStatus;
     //引入战斗序列
     int total_blood; //总体的血量
     int cur_blood; //当前的血量
     boolean TypeOfAttack; //近程攻击还是远程攻击
+    boolean isAngryorNot; //
     int power_of_attack; //攻击力
     int power_of_defence; //防御力
     MediaPlayer sound_of_battle; //战斗音响
@@ -37,17 +41,20 @@ public class Creature implements Fighting{
         power_of_attack = 10;
         power_of_defence = 0; //攻击力和防御力
         isAlive = true; //存活的
-        this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/火焰.png")).toString(),
+      this.battle_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/火焰.png")).toString(),
                 20,20,false,false);
-        this.dead_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/死亡.jpg")).toString(),
+       this.dead_Image =  new Image(this.getClass().getClassLoader().getResource(new String("pic/死亡.jpg")).toString(),
                 50,50,false,false);
+       this.angryStatus =  new Image(this.getClass().getClassLoader().getResource(new String("pic/火.png")).toString(),
+               20,20,false,false);
+       this.isAngryorNot = false; //一开始没进入暴走状态
     }
 
     public Creature() {
         i = -1;
         j = -1;
         total_blood = 100;
-        cur_blood = 90; //都为满血
+        cur_blood = 100; //都为满血
         power_of_attack = 10;
         power_of_defence = 0; //攻击力和防御力
         isAlive = true;
@@ -86,6 +93,9 @@ public class Creature implements Fighting{
             canvas.getGraphicsContext2D().fillRect(this.j * 50, this.i * 50, 50 * rate, 5);
             canvas.getGraphicsContext2D().setFill(Color.RED);
             canvas.getGraphicsContext2D().fillRect(this.j * 50 + 50 * rate, this.i * 50, 50 * (1 - rate), 5);
+            if(this.isAngryorNot == true){
+                canvas.getGraphicsContext2D().drawImage(this.angryStatus, this.j * 50 + 15 ,this.i* 50 - 20);
+            }
         }
         else
         {
@@ -243,6 +253,11 @@ public class Creature implements Fighting{
             this.cur_blood = 0;
             this.isAlive = false; //死亡
         }
+        else{
+            if((double)this.cur_blood / this.total_blood <= 0.2){
+                this.isAngryorNot = true;
+            }
+        }
     }
 
     public int retAttack(){
@@ -265,12 +280,21 @@ public class Creature implements Fighting{
         if(!this.is_Alive() || !enemy.is_Alive()) return;
         this.sound_of_battle.play();
         int damage = this.power_of_attack - enemy.power_of_defence;
+        if(this.isAngryorNot == true)
+        {
+                damage = damage * 2;//2倍暴击
+        }
+        if(damage <= 0) damage = 0;
         enemy.lost_blood(damage);
         int enemy_x = enemy.i;
         int enemy_y = enemy.j; //坐标
         //根据坐标进行绘图，进行攻击显示
-        draw_attack(enemy_x,enemy_y,canvas);
+        if(canvas != null)
+            draw_attack(enemy_x,enemy_y,canvas);
         this.sound_of_battle.stop();
+        if(this.isAngryorNot == false && (double)this.cur_blood / this.total_blood <= 0.2){
+            this.isAngryorNot = true; //维持一次攻击
+        }
     }
 
     public void draw_attack(int t_x ,int t_y,Canvas canvas) {
@@ -317,6 +341,31 @@ public class Creature implements Fighting{
                 }
             }
         }
+    }
+
+    public int retCurBlood(){
+        return this.cur_blood;
+    }
+
+    public void addBlood(int blood){
+        if(this.isAlive == true) //活着
+        {
+            this.cur_blood += blood;
+            if(this.cur_blood >= this.total_blood){
+                this.cur_blood = this.total_blood; //相等
+            }
+            if((double)this.cur_blood/this.total_blood > 0.2){
+                this.isAngryorNot = false;
+            }
+        }
+    }
+    @Override //使用技能
+    public void usingSkill(Battlefield ground,Canvas canvas){
+
+    }
+
+    public void setAngryorNot(boolean type){
+        this.isAngryorNot = type;
     }
 }
 

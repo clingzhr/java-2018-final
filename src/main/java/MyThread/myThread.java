@@ -7,6 +7,7 @@ import javafx.scene.canvas.Canvas;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.locks.Lock;
 
 public class myThread  extends Thread{
@@ -37,9 +38,11 @@ public class myThread  extends Thread{
                 if(this.creature_of_thread.is_Alive()) //如果存活，就进行实验
                 {
                     try {
-                        this.mov();
-                        Thread.sleep(1000);
                         this.attack();
+                        Thread.sleep(500);
+                        this.mov();
+                        Thread.sleep(500);
+                        this.usingSkill();
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace(); //打印出来
@@ -58,6 +61,25 @@ public class myThread  extends Thread{
                     }
                 }
             }
+    }
+
+    private void usingSkill() {
+        if(this.living == false) return;
+        synchronized (this.ground) {
+            if (this.creature_of_thread.is_Alive() == false) return;
+            Random t = new Random();
+            int k = t.nextInt(10);
+            if (k >= 1) {  //0.1的概率
+                return;
+            }
+            //否则使用技能
+            this.creature_of_thread.usingSkill(this.ground,this.mycanvas);
+            int start[] = { this.creature_of_thread.getI() , this.creature_of_thread.getJ() };
+            SAVE_action action = new SAVE_action(2,start,start);
+            synchronized (this.save_actions) {
+                this.save_actions.add(action);
+            }
+        }//保存动作
     }
 
     private void removeFromBattle() {

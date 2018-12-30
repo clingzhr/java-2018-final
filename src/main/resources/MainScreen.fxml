@@ -37,11 +37,6 @@
                       <MenuItem fx:id="review" mnemonicParsing="false" onAction="#reviewAction" text="回放" />
                     </items>
                   </Menu>
-                <Menu mnemonicParsing="false" text="帮助">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="帮助" />
-                  </items>
-                </Menu>
               </menus>
             </MenuBar>
          </top>

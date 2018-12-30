@@ -128,6 +128,7 @@ public class MyController implements Initializable {
         if (this.is_reviewing == false) {
             this.is_reviewing = true; //开始回放
         }
+        else return;
         FileChooser fileChooser = new FileChooser();
         Stage mainStage = null;
         File selectedFile = fileChooser.showOpenDialog(mainStage); //打开文件
